@@ -1,0 +1,8 @@
+﻿body{
+    font-family: Geneva, Verdana, sans-serif;
+    margin: 20px;
+    padding: 0;
+}
+.selection { width: 150px; }
+
+.selectedPlayer { border: 2px solid aliceblue; }
