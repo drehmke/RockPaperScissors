@@ -9,7 +9,7 @@
 
 class Throw {
     public domID: string;
-    constructor(public name: string; public beats: string, public beatsHow: string) {
+    constructor(public name: string; public beats: string, public how: string) {
         this.domID = this.name.toLowerCase();
     }
 }
@@ -27,9 +27,21 @@ let gameMoves = [throwRock, throwPaper, throwScissors];
 let playerHuman: Player = new Player(`Human`);
 let playerComputer: Player = new Player(`Computer`);
 
-function generateResponse(txtWinThrow, txtLoseThrow, txtLoseHow, txtWinner) {
-    let txtResults: string = ``;
-
+function generateResponse(txtWinThrow, txtLoseThrow, txtWinHow, txtWinner) {
+    let txtWin: string;
+    let txtLoser: string;
+    let txtWhoWon: string;
+    if (txtWinner == `Human`) {
+        txtWin = `You`;
+        txtLoser = `The computer`;
+        txtWhoWon = `You won! `;
+    }
+    else if (txtWinner == `Computer`) {
+        txtWin = `The computer`;
+        txtLoser = `You`;
+        txtWhoWon = `The computer wins.`;
+    }
+    let txtResults: string = `${txtWin} threw ${txtWinThrow}. ${txtLoser} threw ${txtLoseThrow}. ${txtWinThrow} ${txtWinHow} ${txtLoseThrow}. ${txtWhoWon}`
     return txtResults;
 }
 
@@ -46,16 +58,19 @@ function evaluatePlay(humanPlay) {
     }
 
     if (playerHuman.throw.beats == playerComputer.throw.name) {
-        console.log(`Player won`);
-    } else if (playerComputer.throw.name == playerHuman.throw.name) {
-        console.log(`Computer won`);
+        console.log(playerHuman.throw, playerComputer.throw);
+        return generateResponse(playerHuman.throw.name, playerComputer.throw.name, playerHuman.throw.how, playerHuman.name);
+    } else if (playerComputer.throw.beats == playerHuman.throw.name) {
+        console.log(playerHuman.throw, playerComputer.throw);
+        return generateResponse(playerComputer.throw.name, playerHuman.throw.name, playerComputer.throw.how, playerComputer.name);
     } else {
-        console.log(`Tied game`);
+        console.log(playerHuman.throw, playerComputer.throw);
+        return `You threw ${playerHuman.throw.name}. The computer threw ${playerComputer.throw.name}. The game is tied. `;
     }
     //console.log(playerComputer, playerHuman);
 }
 
-selectRock.addEventListener(`click`, () => { evaluatePlay(`rock`); });
-selectPaper.addEventListener(`click`, () => { evaluatePlay(`paper`); });
-selectScissors.addEventListener(`click`, () => { evaluatePlay(`scissors`); });
+selectRock.addEventListener(`click`, () => { console.log(evaluatePlay(`rock`)); });
+selectPaper.addEventListener(`click`, () => { console.log(evaluatePlay(`paper`)); });
+selectScissors.addEventListener(`click`, () => { console.log(evaluatePlay(`scissors`)); });
 
