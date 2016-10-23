@@ -1,5 +1,3 @@
-// option: keep track of wins
-// option: send response to dom
 var Player = (function () {
     function Player(name) {
         this.name = name;
@@ -58,13 +56,18 @@ function evaluatePlay(humanPlay) {
         }
     }
     if (playerHuman.throw.beats == playerComputer.throw.name) {
+        playerHuman.winCount++;
+        document.getElementById("winCountHuman").innerHTML = playerHuman.winCount.toString();
         return generateResponse(playerHuman.throw.name, playerComputer.throw.name, playerHuman.throw.how, playerHuman.name);
     }
     else if (playerComputer.throw.beats == playerHuman.throw.name) {
+        playerComputer.winCount++;
+        document.getElementById("winCountComputer").innerHTML = playerComputer.winCount.toString();
         return generateResponse(playerComputer.throw.name, playerHuman.throw.name, playerComputer.throw.how, playerComputer.name);
     }
     else {
         document.getElementById("gameResults").innerHTML = "You threw " + playerHuman.throw.name + ". <br />The computer threw " + playerComputer.throw.name + ". <br /><strong>The game is tied.</strong> ";
+        document.getElementById("tieCount").innerHTML = (parseInt(document.getElementById("tieCount").innerHTML) + 1).toString();
     }
 }
 function updateThrowCSS(player, domID) {

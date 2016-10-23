@@ -1,7 +1,16 @@
-﻿// option: keep track of wins
-// option: send response to dom
+﻿interface IPlayer {
+    name: string;
+    winCount: number;
+    throw: any;
+}
+interface IThrow {
+    domID: string;
+    name: string;
+    beats: string;
+    how: string;
+}
 
-class Player {
+class Player implements IPlayer {
     public throw: any;
     public winCount: number;
     constructor(public name: string) {
@@ -14,7 +23,7 @@ class Player {
     }
 }
 
-class Throw {
+class Throw implements IThrow {
     public domID: string;
     constructor(public name: string; public beats: string, public how: string) {
         this.domID = this.name.toLowerCase();
@@ -29,7 +38,7 @@ let selectPaper = <HTMLImageElement>document.getElementById(throwPaper.domID);
 let throwScissors: Throw = new Throw(`Scissors`, `Paper`, `cut`);
 let selectScissors = <HTMLImageElement>document.getElementById(throwScissors.domID);                                                                
 
-let gameMoves = [throwRock, throwPaper, throwScissors];
+let gameMoves: IThrow[] = [throwRock, throwPaper, throwScissors];
 
 let playerHuman: Player = new Player(`Human`);
 let playerComputer: Player = new Player(`Computer`);
@@ -64,13 +73,18 @@ function evaluatePlay(humanPlay) {
     }
 
     if (playerHuman.throw.beats == playerComputer.throw.name) {
+        playerHuman.winCount++;
+        document.getElementById(`winCountHuman`).innerHTML = playerHuman.winCount.toString();
         return generateResponse(playerHuman.throw.name, playerComputer.throw.name, playerHuman.throw.how, playerHuman.name);
-
     } else if (playerComputer.throw.beats == playerHuman.throw.name) {
+        playerComputer.winCount++;
+        document.getElementById(`winCountComputer`).innerHTML = playerComputer.winCount.toString();
         return generateResponse(playerComputer.throw.name, playerHuman.throw.name, playerComputer.throw.how, playerComputer.name);
     } else {
         document.getElementById(`gameResults`).innerHTML = `You threw ${playerHuman.throw.name}. <br />The computer threw ${playerComputer.throw.name}. <br /><strong>The game is tied.</strong> `;
+        document.getElementById(`tieCount`).innerHTML = (parseInt(document.getElementById(`tieCount`).innerHTML)+1).toString();
     }
+
 }
 
 function updateThrowCSS(player, domID) {
@@ -108,4 +122,3 @@ selectScissors.addEventListener(`click`, () => {
     updateThrowCSS(`Human`, `scissors`);
     evaluatePlay(`scissors`);
 });
-
