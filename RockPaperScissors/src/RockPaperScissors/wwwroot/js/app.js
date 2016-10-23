@@ -1,9 +1,13 @@
+// option: keep track of wins
+// option: send response to dom
 var Player = (function () {
     function Player(name) {
         this.name = name;
+        this.winCount = 0;
     }
     Player.prototype.randomMove = function () {
         this.throw = gameMoves[Math.floor(Math.random() * gameMoves.length)];
+        updateThrowCSS("Computer", this.throw.domID);
     };
     return Player;
 }());
@@ -40,8 +44,8 @@ function generateResponse(txtWinThrow, txtLoseThrow, txtWinHow, txtWinner) {
         txtLoser = "You";
         txtWhoWon = "The computer wins.";
     }
-    var txtResults = txtWin + " threw " + txtWinThrow + ". " + txtLoser + " threw " + txtLoseThrow + ". " + txtWinThrow + " " + txtWinHow + " " + txtLoseThrow + ". " + txtWhoWon;
-    return txtResults;
+    var txtResults = txtWin + " threw " + txtWinThrow + ". <br />" + txtLoser + " threw " + txtLoseThrow + ". <br />" + txtWinThrow + " " + txtWinHow + " " + txtLoseThrow + ". <br /><strong>" + txtWhoWon + "</strong>";
+    document.getElementById("gameResults").innerHTML = txtResults;
 }
 function evaluatePlay(humanPlay) {
     // this is here so that the computer makes a move each time the user does as well
@@ -49,25 +53,51 @@ function evaluatePlay(humanPlay) {
     var txtResults;
     for (var _i = 0, gameMoves_1 = gameMoves; _i < gameMoves_1.length; _i++) {
         var play = gameMoves_1[_i];
-        //console.log(play);
         if (play.domID == humanPlay) {
             playerHuman.throw = play;
         }
     }
     if (playerHuman.throw.beats == playerComputer.throw.name) {
-        console.log(playerHuman.throw, playerComputer.throw);
         return generateResponse(playerHuman.throw.name, playerComputer.throw.name, playerHuman.throw.how, playerHuman.name);
     }
     else if (playerComputer.throw.beats == playerHuman.throw.name) {
-        console.log(playerHuman.throw, playerComputer.throw);
         return generateResponse(playerComputer.throw.name, playerHuman.throw.name, playerComputer.throw.how, playerComputer.name);
     }
     else {
-        console.log(playerHuman.throw, playerComputer.throw);
-        return "You threw " + playerHuman.throw.name + ". The computer threw " + playerComputer.throw.name + ". The game is tied. ";
+        document.getElementById("gameResults").innerHTML = "You threw " + playerHuman.throw.name + ". <br />The computer threw " + playerComputer.throw.name + ". <br /><strong>The game is tied.</strong> ";
     }
-    //console.log(playerComputer, playerHuman);
 }
-selectRock.addEventListener("click", function () { console.log(evaluatePlay("rock")); });
-selectPaper.addEventListener("click", function () { console.log(evaluatePlay("paper")); });
-selectScissors.addEventListener("click", function () { console.log(evaluatePlay("scissors")); });
+function updateThrowCSS(player, domID) {
+    if (player == "Human") {
+        selectRock.className = "";
+        selectPaper.className = "";
+        selectScissors.className = "";
+    }
+    var elemClassList;
+    switch (domID) {
+        case "rock":
+            elemClassList = selectRock.classList;
+            selectRock.className = elemClassList.value + (" selectedBy" + player);
+            break;
+        case "paper":
+            elemClassList = selectRock.classList;
+            selectPaper.className = elemClassList.value + (" selectedBy" + player);
+            break;
+        case "scissors":
+            elemClassList = selectRock.classList;
+            selectScissors.className = elemClassList.value + (" selectedBy" + player);
+            break;
+    }
+}
+selectRock.addEventListener("click", function () {
+    updateThrowCSS("Human", "rock");
+    evaluatePlay("rock");
+});
+selectPaper.addEventListener("click", function () {
+    updateThrowCSS("Human", "paper");
+    evaluatePlay("paper");
+});
+selectScissors.addEventListener("click", function () {
+    updateThrowCSS("Human", "scissors");
+    evaluatePlay("scissors");
+});
